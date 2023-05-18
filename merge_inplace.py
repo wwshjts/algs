@@ -51,7 +51,7 @@ def meta_sort(arr, start, end):
 
         #Мерджим отсортированные части
         print(f'merge {arr[start:middle]} and {arr[r_s:end]}')
-        merge(arr, start, start + r_s - middle, r_s, end, buff_k = middle)
+        merge(arr, start, r_s - start - middle, r_s, end, buff_k = middle)
         print(f'after merge {arr}')
 
         print(f'now meta sort{arr[start: middle]}')
