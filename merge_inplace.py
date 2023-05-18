@@ -1,3 +1,4 @@
+from random import randint
 def merge(arr, l_i, l_end, r_i, r_end, buff_k):
     #print(l_i, l_end, r_i, r_end, buff_k)
     #print(f'l:{arr[l_i:l_end]} r:{arr[r_i:r_end]}')
@@ -31,7 +32,7 @@ def sort(arr, start, end, buff_k):
         merge(arr, start, middle, middle, end, buff_k)
 
 def meta_sort(arr, start, end):
-    if end - start > 1:
+    if end - start > 2:
         print(f'sorting{arr[start:end]}')
         #Выбираем границы так, чтобы размер buff
         #был не меньше чем сортируемая часть
@@ -40,6 +41,7 @@ def meta_sort(arr, start, end):
         print(f'call sort on {arr[start:l_e]} to {arr[r_s]}')
         sort(arr, start, l_e, r_s)
         print(f'after sorting {arr}')
+
         #После этого все эл-ты начиная с r_s отсортированы
         #Теперь отсортируем середину в левую часть
         middle = (start + r_s) // 2 + (start + r_s) % 2
@@ -49,15 +51,18 @@ def meta_sort(arr, start, end):
 
         #Мерджим отсортированные части
         print(f'merge {arr[start:middle]} and {arr[r_s:end]}')
-        merge(arr, start, middle, r_s, end, buff_k = middle)
+        merge(arr, start, start + r_s - middle, r_s, end, buff_k = middle)
         print(f'after merge {arr}')
 
         print(f'now meta sort{arr[start: middle]}')
         meta_sort(arr, start, middle)
+    elif end - start == 2:
+        if arr[start] > arr[end - 1]:
+            arr[start], arr[end - 1] = arr[end - 1], arr[start]
 
 def merge_sort(arr):
     meta_sort(arr, 0, len(arr))
 
-arr = [9,8,7,6,5,4,3,2,1]
+arr = [randint(0, 10) for i in range(5)]
 merge_sort(arr)
 print(arr)
