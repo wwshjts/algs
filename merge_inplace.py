@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 def merge(arr, l_i, l_end, r_i, r_end, buff_k):
     #print(l_i, l_end, r_i, r_end, buff_k)
     #print(f'l:{arr[l_i:l_end]} r:{arr[r_i:r_end]}')
@@ -32,37 +32,57 @@ def sort(arr, start, end, buff_k):
         merge(arr, start, middle, middle, end, buff_k)
 
 def meta_sort(arr, start, end):
-    if end - start > 2:
+    if end - start > 1:
         print(f'sorting{arr[start:end]}')
         #Выбираем границы так, чтобы размер buff
         #был не меньше чем сортируемая часть
         l_e = (start + end) // 2
         r_s = start + end - l_e 
         print(f'call sort on {arr[start:l_e]} to {arr[r_s]}')
+        #Сортируем левую часть массива, используя правую как буфер
         sort(arr, start, l_e, r_s)
         print(f'after sorting {arr}')
 
         #После этого все эл-ты начиная с r_s отсортированы
         #Теперь отсортируем середину в левую часть
         middle = (start + r_s) // 2 + (start + r_s) % 2
+        
+
         print(f'sorting 1/4 {arr[middle:r_s]} to {arr[start]}')
         sort(arr, middle, r_s, buff_k = start)
         print(f'after sorting 1/4 {arr}')
 
         #Мерджим отсортированные части
-        print(f'merge {arr[start:middle]} and {arr[r_s:end]}')
-        merge(arr, start, r_s - start - middle, r_s, end, buff_k = middle)
+        print(f'merge {arr[start:start + r_s - middle]} and {arr[r_s:end]}')
+        merge(arr, start, start + r_s - middle, r_s, end, buff_k = middle)
         print(f'after merge {arr}')
-
-        print(f'now meta sort{arr[start: middle]}')
-        meta_sort(arr, start, middle)
-    elif end - start == 2:
-        if arr[start] > arr[end - 1]:
-            arr[start], arr[end - 1] = arr[end - 1], arr[start]
+        #В данный момент отстортирована часть начиная с middle
+        
+        #разбить на пополам [start, middle)
+        #[start, new_middle) [new_middle, middle)
+        #отсотрировать sort(arr, new_middle, middle, start) 
+        #merge
+        #и так далее
+        #Указатель на остортированную часть
+        q = middle
+        #print(q - start)
+        while q - start > 2:
+            new_middle = (start + q) // 2 + (start + q) % 2
+            print(f'sorting like normal {arr[new_middle:q]}')
+            sort(arr, new_middle, q, start)
+            print(f'after sorting like normak{arr}')
+            #после этого отсортированная часть
+            merge(arr, start, start + r_s - new_middle, q, end, buff_k = new_middle)
+            q = new_middle
+        for i in range(start, q-1):
+            if arr[i] > arr[i+1]:
+                arr[i], arr[i+1] = arr[i+1],arr[i]
+#        print(f'res {arr}')
 
 def merge_sort(arr):
     meta_sort(arr, 0, len(arr))
 
-arr = [randint(0, 10) for i in range(5)]
+arr = [x for x in range(1, 9)]
+shuffle(arr)
 merge_sort(arr)
 print(arr)
