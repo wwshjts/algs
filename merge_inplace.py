@@ -31,8 +31,6 @@ def sort(arr, start, end, buff_k):
 
 def meta_sort(arr, start, end):
     if end - start > 1:
-        print(f'sorting{arr[start:end]}')
-        #Выбираем границы так, чтобы размер buff
         #был не меньше чем сортируемая часть
         l_e = (start + end) // 2
         r_s = start + end - l_e 
@@ -41,12 +39,11 @@ def meta_sort(arr, start, end):
         q = r_s
         while q - start > 2:
             new_middle = (start + q) // 2 + (start + q) % 2
-            print(f'sorting in  cycle{arr[new_middle:q]}')
             sort(arr, new_middle, q, start)
             merge(arr, start, start + q - new_middle, q, end, buff_k = new_middle)
             q = new_middle
 
-        for i in range(q):
+        for i in range(q, start - 1, -1):
             for j in range(i, end - 1):
                 if arr[j] > arr[j + 1]:
                     arr[j], arr[j+1] = arr[j+1], arr[j]

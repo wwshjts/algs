@@ -4,6 +4,7 @@ def merge(l, r, buff):
     len_r = len(r)
     len_buff = len(buff)
     i = j = k = 0
+    counter = 0
     while i < len_l and j < len_r:
         if l[i] <= r[j]:
             buff[k] = l[i]
@@ -11,6 +12,7 @@ def merge(l, r, buff):
         else:
             buff[k] = r[j]
             j += 1
+            counter += len_l - i + 1
         k += 1
     while i < len_l:
         buff[k] = l[i]
@@ -20,6 +22,7 @@ def merge(l, r, buff):
         buff[k] = r[j]
         k += 1
         j += 1
+    return counter
 
 def merge_sort_impl(a, buffer):
     if len(a) == 1:
