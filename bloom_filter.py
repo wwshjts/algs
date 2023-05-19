@@ -30,32 +30,35 @@ class BitSet:
 
 class BloomFilter:
     def __init__(self, eps = 0.1, s = 10):
-        #Погреность
+        #Погрешность
         self.eps = eps
         #Количество обращений
         self.s = s
         self.b = int(log(eps, 0.5) / log(2))
         self.k = int(log(2) * self.b)
         self.n = self.s * self.b
+        print(self.n)
         self.arr = BitSet(self.n)
         a = [x for x in range((self.k) * 4 + 1)]
         self.func = []
         for i in range(0, len(a) - 4, 4):
             self.func.append([a[i+j] for j in range(4)])
+    
+
     def call_func(self, index, x):
         return sum(self.func[index][i] * x[i] for i in range(4)) % self.n
-s = BloomFilter(eps = 0.02, s = 10)
 
+    def insert(self, ip):
+        for i in range(self.k):
+            ind = self.call_func(i, ip)
+            self.arr[ind] = 1
+        self.arr.print
+    
+    def lookup(self, ip):
+        flag = True
+        for i in range(self.k):
+            ind = self.call_func(i, ip)
+            flag = flag and self.arr[ind]
+        return flag
+        
 
-
-
-
-'''
-#Желаемая вероятность ошибки
-eps = float(input('Input epsilon> '))
-#Предполагаемое количество запросов
-s = int(input('Amount of inserts> '))
-#Бит на элемент
-b = int(log(eps, 0.5) / log(2))
-#Колиечество бит
-n = b * s'''
