@@ -1,4 +1,5 @@
 from math import log, e
+from random import shuffle
 import numpy as np
 class BitSet:
     def __init__(self, size_bits = 8):
@@ -27,6 +28,24 @@ class BitSet:
                 mask = mask << 1
         print()
 
+class BloomFilter:
+    def __init__(self, eps = 0.1, s = 10):
+        #Погреность
+        self.eps = eps
+        #Количество обращений
+        self.s = s
+        self.b = int(log(eps, 0.5) / log(2))
+        self.k = int(log(2) * self.b)
+        self.n = self.s * self.b
+        self.arr = BitSet(self.n)
+        a = [x for x in range((self.k) * 4 + 1)]
+        self.func = []
+        for i in range(0, len(a) - 4, 4):
+            self.func.append([a[i+j] for j in range(4)])
+    def call_func(self, index, x):
+        return sum(self.func[index][i] * x[i] for i in range(4)) % self.n
+s = BloomFilter(eps = 0.02, s = 10)
+
 
 
 
@@ -40,9 +59,3 @@ s = int(input('Amount of inserts> '))
 b = int(log(eps, 0.5) / log(2))
 #Колиечество бит
 n = b * s'''
-
-arr = BitSet(7)
-arr[0] = 1
-arr[3] = 1
-arr[5] = 1
-arr.print
