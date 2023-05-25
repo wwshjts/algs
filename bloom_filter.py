@@ -1,6 +1,5 @@
 from math import log, e
-from random import shuffle
-import numpy as np
+from random import shuffle, randint
 class BitSet:
     def __init__(self, size_bits = 8):
         self.size = size_bits // 8 + 1
@@ -34,15 +33,13 @@ class BloomFilter:
         self.eps = eps
         #Количество обращений
         self.s = s
-        self.b = int(log(eps, 0.5) / log(2))
-        self.k = int(log(2) * self.b)
+        self.b = int(log(eps, 0.5) / log(2)) + 1
+        self.k = int(log(2) * self.b) + 1
         self.n = self.s * self.b
-        print(self.n)
         self.arr = BitSet(self.n)
-        a = [x for x in range((self.k) * 4 + 1)]
         self.func = []
-        for i in range(0, len(a) - 4, 4):
-            self.func.append([a[i+j] for j in range(4)])
+        for i in range(self.k):
+            self.func.append([randint(0,self.n - 1) for i in range(4)])
     
 
     def call_func(self, index, x):
@@ -52,7 +49,6 @@ class BloomFilter:
         for i in range(self.k):
             ind = self.call_func(i, ip)
             self.arr[ind] = 1
-        self.arr.print
     
     def lookup(self, ip):
         flag = True
@@ -61,4 +57,25 @@ class BloomFilter:
             flag = flag and self.arr[ind]
         return flag
         
+eps = float(input('eps> '))
+calls  = int(input('calls> '))
+cor = set()
+s = BloomFilter(eps=eps, s=calls)
 
+for i in range(calls):
+    ip = tuple((randint(0,255) for _ in range(4)))
+    cor.add(ip)
+    s.insert(ip)
+print(s.b)
+print(s.k)
+print(s.n)
+cnt = 0
+for i in range(calls):
+    ip = tuple((randint(0, 255) for _ in range(4)))
+    while ip in cor:
+        ip = tuple((randint(0, 255) for _ in range(4)))
+    if s.lookup(ip):
+        cnt += 1
+print(cnt)
+
+    
